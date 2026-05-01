@@ -1,0 +1,49 @@
+# MallaTrack — Render Blueprint
+# https://render.com/docs/blueprint-spec
+#
+# Env layout (local vs production):
+# - `.env`          → local DATABASE_URL (SQLite `file:./dev.db` per .env.example)
+# - `.env.example`  → documents DATABASE_URL, NEXTAUTH_URL, NEXTAUTH_SECRET for dev
+# - `.env.local`    → local overrides (URLs, secrets, Resend) — do not commit; not used on Render
+#
+# On Render, set the same *names* as .env.example / .env.local, with production values:
+# - DATABASE_URL    → from Render Postgres (replaces SQLite `file:./dev.db`)
+# - NEXTAUTH_URL    → canonical public origin, https, no trailing slash (not localhost:3002)
+# - NEXTAUTH_SECRET → strong secret (generated below; rotate if reusing a leaked dev secret)
+# - APP_URL         → optional; same origin as NEXTAUTH_URL if you use absolute links (see lib/app-base-url.ts)
+# - RESEND_API_KEY, AUTH_EMAIL_FROM → optional; same as .env.local when email is enabled
+
+databases:
+  - name: mallatrack-db
+    databaseName: mallatrack
+    user: mallatrack
+
+services:
+  - type: web
+    runtime: node
+    name: mallatrack-web
+    region: oregon
+    plan: starter
+    buildCommand: npm ci && npm run build
+    # Matches .env.example / package.json: Postgres migrations in prisma/pg/migrations/
+    preDeployCommand: npm run migrate:deploy:pg
+    startCommand: npm run start
+    healthCheckPath: /login
+    envVars:
+      - key: NODE_VERSION
+        value: "22.12.0"
+      - key: DATABASE_URL
+        fromDatabase:
+          name: mallatrack-db
+          property: connectionString
+      - key: NEXTAUTH_SECRET
+        generateValue: true
+      # Set in dashboard: https://<service>.onrender.com or your custom domain (not http://localhost:3002)
+      - key: NEXTAUTH_URL
+        sync: false
+      - key: APP_URL
+        sync: false
+      - key: RESEND_API_KEY
+        sync: false
+      - key: AUTH_EMAIL_FROM
+        sync: false
