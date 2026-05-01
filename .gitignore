@@ -3,6 +3,9 @@ node_modules
 out
 .env
 .env*.local
+.env.production
+.env.staging
+.env.preview
 *.tsbuildinfo
 dev.db
 dev.db-journal
