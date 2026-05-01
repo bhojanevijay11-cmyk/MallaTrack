@@ -23,7 +23,7 @@ services:
     runtime: node
     name: mallatrack-web
     region: oregon
-    plan: starter
+    plan: free
     buildCommand: npm ci && npm run build
     # Matches .env.example / package.json: Postgres migrations in prisma/pg/migrations/
     preDeployCommand: npm run migrate:deploy:pg
