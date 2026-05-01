@@ -1,0 +1,391 @@
+// Staging/production: PostgreSQL. Migrations: prisma/pg/migrations/
+// Local SQLite dev uses prisma/schema.prisma — see prisma/README.md and scripts/prisma-generate-for-db-url.js
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum ThemePreference {
+  SYSTEM
+  LIGHT
+  DARK
+}
+
+/** Per-user UI and notification channel preferences (not auth scope). 1:1 with User. */
+model UserPreference {
+  id        String   @id @default(cuid())
+  userId    String   @unique
+  themePreference             ThemePreference @default(SYSTEM)
+  emailNotificationsEnabled   Boolean         @default(true)
+  inAppNotificationsEnabled   Boolean         @default(true)
+  locale    String?
+  timezone  String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+/** Tenant root: separate academies / organizations sharing one app deployment. */
+model Institute {
+  id        String   @id @default(cuid())
+  name      String
+  /// active | disabled — use lib/institute-status.ts constants
+  status    String   @default("active")
+  createdAt DateTime @default(now())
+
+  branches    Branch[]
+  users       User[]
+  invites     Invite[]
+  batches              Batch[]
+  students             Student[]
+  coaches              Coach[]
+  attendances          Attendance[]
+  studentProgressEntries StudentProgressEntry[]
+  progressAssessments    ProgressAssessment[]
+  studentReviews         StudentReview[]
+}
+
+model Branch {
+  id          String   @id @default(cuid())
+  name        String
+  instituteId String?
+  createdAt   DateTime @default(now())
+
+  institute Institute? @relation(fields: [instituteId], references: [id], onDelete: SetNull)
+  users     User[]
+  batches   Batch[]
+  invites   Invite[]
+
+  @@index([instituteId])
+}
+
+model User {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  passwordHash String
+  /// App role: admin | head_coach | assistant_coach | parent | super_admin
+  role         String
+  branchId     String?
+  instituteId  String?
+  createdAt    DateTime @default(now())
+
+  /** SHA-256 hex of raw reset token; null when no active reset. */
+  passwordResetTokenHash String?   @unique
+  passwordResetExpires   DateTime?
+
+  branch               Branch?            @relation(fields: [branchId], references: [id], onDelete: SetNull)
+  institute            Institute?         @relation(fields: [instituteId], references: [id], onDelete: SetNull)
+  sentInvites          Invite[]           @relation("InviteInviter")
+  /** Staff invite rows where this user is the invitee (provisional account created at invite time). */
+  invitesReceived      Invite[]           @relation("InviteInvitedUser")
+  assistantAssignments BatchAssistant[]
+  authoredProgressAssessments   ProgressAssessment[] @relation("ProgressAssessmentAuthor")
+  submittedProgressAssessments  ProgressAssessment[] @relation("ProgressAssessmentSubmittedBy")
+  reviewedProgressAssessments   ProgressAssessment[] @relation("ProgressAssessmentReviewedBy")
+  students                      Student[]
+  authoredStudentReviews        StudentReview[]      @relation("StudentReviewAuthor")
+  preference                    UserPreference?
+
+  @@index([branchId])
+  @@index([instituteId])
+}
+
+model Invite {
+  id String @id @default(cuid())
+
+  email    String
+  fullName String
+  role     String
+
+  instituteId String
+  branchId    String?
+
+  /** When set, this is a parent invite for the given student (staff invites keep this null). */
+  studentId String?
+
+  inviterUserId String
+  /** Provisional invitee account created with the invite; password is set on acceptance. */
+  invitedUserId String
+
+  tokenHash String @unique
+  expiresAt DateTime
+  usedAt    DateTime?
+  createdAt DateTime @default(now())
+
+  institute Institute @relation(fields: [instituteId], references: [id], onDelete: Cascade)
+  branch    Branch?   @relation(fields: [branchId], references: [id], onDelete: SetNull)
+  student   Student?  @relation(fields: [studentId], references: [id], onDelete: SetNull)
+  inviter   User      @relation("InviteInviter", fields: [inviterUserId], references: [id], onDelete: Restrict)
+  invitedUser User    @relation("InviteInvitedUser", fields: [invitedUserId], references: [id], onDelete: Restrict)
+
+  @@index([instituteId, email, usedAt])
+  @@index([expiresAt])
+  @@index([studentId, usedAt])
+}
+
+model Student {
+  id               String   @id @default(cuid())
+  fullName         String
+  dob              String
+  gender           String   // "Male" | "Female"
+  parentName       String?
+  parentPhone      String?
+  emergencyContact String?
+  joiningDate      DateTime @default(now())
+  status           String   @default("ACTIVE")
+  batchId          String?
+  instituteId      String?
+  parentUserId     String?
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  batch       Batch?     @relation(fields: [batchId], references: [id], onDelete: SetNull)
+  institute   Institute? @relation(fields: [instituteId], references: [id], onDelete: SetNull)
+  parent      User?      @relation(fields: [parentUserId], references: [id], onDelete: SetNull)
+  parentInvites Invite[]
+  attendances Attendance[]
+  progressEntries StudentProgressEntry[]
+  progressAssessments ProgressAssessment[]
+  studentReviews      StudentReview[]
+
+  @@index([fullName])
+  @@index([status])
+  @@index([batchId])
+  @@index([instituteId])
+  @@index([parentUserId])
+}
+
+model Coach {
+  id          String   @id @default(cuid())
+  fullName    String
+  phone       String?
+  status      String   @default("ACTIVE")
+  instituteId String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  institute Institute? @relation(fields: [instituteId], references: [id], onDelete: SetNull)
+  batches   Batch[]
+
+  @@index([status])
+  @@index([instituteId])
+}
+
+model Batch {
+  id          String   @id @default(cuid())
+  name        String?
+  status      String   @default("ACTIVE")
+  startTime   String?
+  endTime     String?
+  coachId     String?
+  /** Optional for legacy rows; new admin-created batches should set this. */
+  branchId    String?
+  instituteId String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  students             Student[]
+  coach                Coach?             @relation(fields: [coachId], references: [id], onDelete: SetNull)
+  branch               Branch?            @relation(fields: [branchId], references: [id], onDelete: SetNull)
+  institute            Institute?         @relation(fields: [instituteId], references: [id], onDelete: SetNull)
+  attendances          Attendance[]
+  assistantAssignments BatchAssistant[]
+  progressAssessments  ProgressAssessment[]
+
+  @@index([status])
+  @@index([coachId])
+  @@index([branchId])
+  @@index([instituteId])
+}
+
+model StudentProgressEntry {
+  id              String   @id @default(cuid())
+  studentId       String
+  instituteId     String?
+  sessionDate     String
+  technicalScore  Int?
+  tacticalScore   Int?
+  physicalScore   Int?
+  mentalScore     Int?
+  disciplineScore Int?
+  remarks         String?
+  targetTierLabel String?
+  createdByUserId String?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  student   Student    @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  institute Institute? @relation(fields: [instituteId], references: [id], onDelete: SetNull)
+
+  @@unique([studentId, sessionDate])
+  @@index([studentId, sessionDate])
+  @@index([instituteId])
+}
+
+model ProgressAssessment {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  instituteId String
+  studentId   String
+  batchId     String
+
+  /** Calendar/logical date of the assessment (wall time; not necessarily UTC midnight semantics). */
+  assessmentDate DateTime
+
+  /** ADHOC | WEEK | MONTH */
+  periodType String @default("ADHOC")
+  /** Optional stable key for the review period (e.g. "2026-W14", "2026-04"). */
+  periodKey String?
+
+  /** DRAFT | PENDING_REVIEW | NEEDS_REVISION | APPROVED */
+  status String @default("DRAFT")
+
+  strengthScore    Int?
+  flexibilityScore Int?
+  techniqueScore   Int?
+  disciplineScore  Int?
+  overallScore     Int?
+
+  coachNotes String?
+
+  /** ON_TRACK | NEEDS_ATTENTION | EXCELLING */
+  assessmentIndicator String?
+
+  authorUserId String
+
+  submittedAt        DateTime?
+  submittedByUserId  String?
+  reviewedAt         DateTime?
+  reviewedByUserId   String?
+  reviewNote         String?
+
+  institute Institute @relation(fields: [instituteId], references: [id], onDelete: Cascade)
+  student   Student   @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  batch     Batch     @relation(fields: [batchId], references: [id], onDelete: Cascade)
+
+  authorUser       User  @relation("ProgressAssessmentAuthor", fields: [authorUserId], references: [id], onDelete: Restrict)
+  submittedByUser  User? @relation("ProgressAssessmentSubmittedBy", fields: [submittedByUserId], references: [id], onDelete: SetNull)
+  reviewedByUser   User? @relation("ProgressAssessmentReviewedBy", fields: [reviewedByUserId], references: [id], onDelete: SetNull)
+
+  exercises ProgressAssessmentExercise[]
+
+  @@index([instituteId, status])
+  @@index([instituteId, batchId, status])
+  @@index([studentId, assessmentDate])
+  @@index([instituteId, assessmentDate])
+  @@index([reviewedByUserId])
+  @@index([authorUserId])
+}
+
+model ProgressAssessmentExercise {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  assessmentId String
+  sortOrder    Int    @default(0)
+
+  exerciseName         String
+  /** Target or expected performance (e.g. "30 reps"). Kept for backward compatibility and free-text targets. */
+  expectedPerformance  String?
+  observedPerformance String?
+  note                 String?
+
+  targetReps     Int?
+  targetSets     Int?
+  completedReps  Int?
+  completedSets Int?
+
+  assessment ProgressAssessment @relation(fields: [assessmentId], references: [id], onDelete: Cascade)
+
+  @@index([assessmentId, sortOrder])
+}
+
+model StudentReview {
+  id           String   @id @default(cuid())
+  studentId    String
+  instituteId  String
+  authorUserId String
+  authorRole   String
+  title        String?
+  note         String
+  visibility   String
+  status       String   @default("DRAFT")
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  student   Student   @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  institute Institute @relation(fields: [instituteId], references: [id], onDelete: Cascade)
+  author    User      @relation("StudentReviewAuthor", fields: [authorUserId], references: [id], onDelete: Restrict)
+
+  @@index([studentId, createdAt])
+  @@index([instituteId, createdAt])
+  @@index([authorUserId, createdAt])
+}
+
+model BatchAssistant {
+  id      String @id @default(cuid())
+  batchId String
+  userId  String
+
+  batch Batch @relation(fields: [batchId], references: [id], onDelete: Cascade)
+  user  User  @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([batchId, userId])
+  @@index([userId])
+}
+
+model Attendance {
+  id          String   @id @default(cuid())
+  studentId   String
+  batchId     String
+  instituteId String?
+  date        String
+  status      String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  /** User who first created this attendance row (Assistant or other allowed role). */
+  submittedByUserId  String?
+  /** Wall-clock instant when this row was first submitted (not reset on edits). */
+  submittedAt        DateTime?
+  /** Last user who changed status after initial submit (Assistant edits). */
+  lastEditedByUserId String?
+  lastEditedAt       DateTime?
+  editCount          Int      @default(0)
+
+  student   Student    @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  batch     Batch      @relation(fields: [batchId], references: [id], onDelete: Cascade)
+  institute Institute? @relation(fields: [instituteId], references: [id], onDelete: SetNull)
+
+  @@unique([studentId, batchId, date])
+  @@index([batchId, date])
+  @@index([studentId, date])
+  @@index([instituteId])
+}
+
+model PlatformAuditLog {
+  id          String   @id @default(cuid())
+  actorUserId String?
+  actorEmail  String?
+  action      String
+  targetType  String
+  targetId    String?
+  instituteId String?
+  metadata    String?
+  createdAt   DateTime @default(now())
+
+  @@index([action])
+  @@index([targetType])
+  @@index([targetId])
+  @@index([instituteId])
+  @@index([createdAt])
+}
+
