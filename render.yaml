@@ -26,7 +26,6 @@ services:
     plan: free
     buildCommand: npm ci && npm run build
     # Matches .env.example / package.json: Postgres migrations in prisma/pg/migrations/
-    preDeployCommand: npm run migrate:deploy:pg
     startCommand: npm run start
     healthCheckPath: /login
     envVars:
