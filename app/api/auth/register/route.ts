@@ -10,6 +10,14 @@ import { apiError } from "@/lib/api-response";
 export const runtime = "nodejs";
 
 export async function POST(req: Request) {
+  if (process.env.PUBLIC_REGISTRATION_ENABLED !== "true") {
+    return apiError({
+      code: "PUBLIC_REGISTRATION_DISABLED",
+      message: "Public registration is not enabled.",
+      status: 403,
+    });
+  }
+
   let body: unknown;
   try {
     body = await req.json();

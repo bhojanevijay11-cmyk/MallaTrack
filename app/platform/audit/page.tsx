@@ -2,6 +2,7 @@ import Link from "next/link";
 import { PlatformShell } from "@/components/platform/PlatformShell";
 import { getPlatformAuditLogs } from "@/lib/platform-audit";
 import { requireSuperAdminPage } from "@/lib/platform-auth";
+import { logError } from "@/lib/server-log";
 
 const ACTION_LABELS: Record<string, string> = {
   "institute.status_changed": "Institute status changed",
@@ -112,7 +113,7 @@ export default async function PlatformAuditPage() {
     const result = await getPlatformAuditLogs({ limit: 50 });
     logs = result.logs;
   } catch (e) {
-    console.error("[platform/audit]", e);
+    logError("platform_audit_load_failed", { route: "/platform/audit" }, e);
     loadError = "Unable to load audit logs. Try again later.";
   }
 

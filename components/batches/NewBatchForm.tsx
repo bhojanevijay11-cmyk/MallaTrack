@@ -78,7 +78,9 @@ export function NewBatchForm({ branches, requireBranchSelection }: Props) {
 
       router.push("/batches");
     } catch (err) {
-      console.error(err);
+      if (process.env.NODE_ENV === "development") {
+        console.error(err);
+      }
       setErrorMessage("Failed to create batch.");
     } finally {
       setIsSubmitting(false);

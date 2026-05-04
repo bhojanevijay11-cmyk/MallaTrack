@@ -4,7 +4,12 @@ import { prisma } from "@/lib/prisma";
 import { getSessionUser, requireRoleWithInstitute } from "@/lib/auth-server";
 import { buildStudentScopeWhere } from "@/lib/authz-prisma-scopes";
 import { displayNameFromEmail } from "@/lib/email-display";
-import { APP_STAFF_ROLES, ROLE_HEAD_COACH, ROLE_PARENT } from "@/lib/roles";
+import {
+  APP_STAFF_ROLES,
+  ROLE_ASSISTANT_COACH,
+  ROLE_HEAD_COACH,
+  ROLE_PARENT,
+} from "@/lib/roles";
 import { logCtxWithActor, logError } from "@/lib/server-log";
 
 export const runtime = "nodejs";
@@ -25,7 +30,7 @@ export async function GET(req: Request) {
   try {
     let rows: { id: string; email: string }[];
 
-    if (user.role === ROLE_HEAD_COACH) {
+    if (user.role === ROLE_HEAD_COACH || user.role === ROLE_ASSISTANT_COACH) {
       const studentScope = await buildStudentScopeWhere(user);
       const links = await prisma.student.findMany({
         where: {

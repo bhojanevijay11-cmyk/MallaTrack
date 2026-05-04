@@ -500,7 +500,9 @@ export function StudentsList() {
         }
       } catch (err) {
         if (controller.signal.aborted) return;
-        console.error(err);
+        if (process.env.NODE_ENV === "development") {
+          console.error(err);
+        }
         setError("list");
         setStudents([]);
         setTotalInScope(null);

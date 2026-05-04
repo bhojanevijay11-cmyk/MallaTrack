@@ -8,6 +8,7 @@ import {
   getPlatformSupportInvites,
   getPlatformSupportUsers,
 } from "@/lib/platform-support";
+import { logError } from "@/lib/server-log";
 
 const PREVIEW_LIMIT = 25;
 
@@ -52,21 +53,21 @@ export default async function PlatformSupportPage() {
   try {
     usersResult = await getPlatformSupportUsers({ limit: PREVIEW_LIMIT });
   } catch (e) {
-    console.error("[platform/support users preview]", e);
+    logError("platform_support_users_preview_failed", { route: "/platform/support" }, e);
     usersError = "Could not load user scope preview.";
   }
 
   try {
     invitesResult = await getPlatformSupportInvites({ limit: PREVIEW_LIMIT });
   } catch (e) {
-    console.error("[platform/support invites preview]", e);
+    logError("platform_support_invites_preview_failed", { route: "/platform/support" }, e);
     invitesError = "Could not load invite preview.";
   }
 
   try {
     linksResult = await getPlatformParentLinks({ limit: PREVIEW_LIMIT });
   } catch (e) {
-    console.error("[platform/support parent-links preview]", e);
+    logError("platform_support_parent_links_preview_failed", { route: "/platform/support" }, e);
     linksError = "Could not load parent link preview.";
   }
 

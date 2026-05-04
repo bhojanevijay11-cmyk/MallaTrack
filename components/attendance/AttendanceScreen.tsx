@@ -181,7 +181,9 @@ export function AttendanceScreen({
       setBatches(active);
     } catch (e) {
       if (signal?.aborted) return;
-      console.error(e);
+      if (process.env.NODE_ENV === "development") {
+        console.error(e);
+      }
       setListError("fetch");
       setBatches([]);
     }
@@ -247,7 +249,9 @@ export function AttendanceScreen({
       setDraftSelections(snapshot);
       setSavedSelections({ ...snapshot });
     } catch (e) {
-      console.error(e);
+      if (process.env.NODE_ENV === "development") {
+        console.error(e);
+      }
       setLoadError("roster-fetch");
       setStudents([]);
       setDraftSelections({});
@@ -351,7 +355,9 @@ export function AttendanceScreen({
       setSuccessMsg("Attendance saved.");
       return true;
     } catch (e) {
-      console.error(e);
+      if (process.env.NODE_ENV === "development") {
+        console.error(e);
+      }
       setSubmitError(
         "Attendance couldn't be saved. Check your connection and use Submit again on the bar below.",
       );

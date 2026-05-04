@@ -1,8 +1,11 @@
 import type { Prisma } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
+import { logError } from "@/lib/server-log";
 
 export const PLATFORM_AUDIT_ACTION_INSTITUTE_STATUS_CHANGED =
   "institute.status_changed" as const;
+export const PLATFORM_AUDIT_ACTION_INSTITUTE_PROVISIONED =
+  "institute.provisioned" as const;
 export const PLATFORM_AUDIT_ACTION_HEALTH_REPAIR_ASSIGN_BATCH_BRANCH =
   "health_repair.assign_batch_branch" as const;
 export const PLATFORM_AUDIT_ACTION_HEALTH_REPAIR_CLEAR_BATCH_ORPHAN_BRANCH =
@@ -40,7 +43,7 @@ function safeStringifyMetadata(value: unknown): string | null {
 }
 
 /**
- * Best-effort audit row. Never throws; failures are console-logged only.
+ * Best-effort audit row. Never throws; failures are logged via logError (bounded).
  */
 export async function createPlatformAuditLog(
   input: CreatePlatformAuditLogInput,
@@ -58,7 +61,11 @@ export async function createPlatformAuditLog(
       });
       actorEmail = row?.email?.trim() || null;
     } catch (e) {
-      console.error("[platform-audit] actor email lookup failed", e);
+      logError(
+        "platform_audit_actor_email_lookup_failed",
+        { route: "lib/platform-audit#createPlatformAuditLog" },
+        e,
+      );
     }
   }
 
@@ -77,7 +84,11 @@ export async function createPlatformAuditLog(
       },
     });
   } catch (e) {
-    console.error("[platform-audit] create failed", e);
+    logError(
+      "platform_audit_create_failed",
+      { route: "lib/platform-audit#createPlatformAuditLog" },
+      e,
+    );
   }
 }
 

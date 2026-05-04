@@ -3,6 +3,7 @@ import { PlatformShell } from "@/components/platform/PlatformShell";
 import { INSTITUTE_STATUS_DISABLED } from "@/lib/institute-status";
 import { requireSuperAdminPage } from "@/lib/platform-auth";
 import { getPlatformInstituteSummaries } from "@/lib/platform-institutes";
+import { logError } from "@/lib/server-log";
 
 function StatusBadge({ disabled }: { disabled: boolean }) {
   return (
@@ -27,7 +28,7 @@ export default async function PlatformInstitutesPage() {
   try {
     institutes = await getPlatformInstituteSummaries();
   } catch (e) {
-    console.error("[platform/institutes]", e);
+    logError("platform_institutes_load_failed", { route: "/platform/institutes" }, e);
     loadError = "Unable to load institutes. Try again later.";
   }
 
@@ -47,12 +48,20 @@ export default async function PlatformInstitutesPage() {
               rows linked to each institute (not the same filters as the tenant Admin dashboard).
             </p>
           </div>
-          <Link
-            href="/platform"
-            className="text-sm font-medium text-amber-900 underline decoration-amber-800/40 underline-offset-4 hover:text-amber-950"
-          >
-            ← Back to platform
-          </Link>
+          <div className="flex flex-col items-stretch gap-2 sm:items-end">
+            <Link
+              href="/platform/institutes/new"
+              className="inline-flex items-center justify-center rounded-lg border border-amber-200/90 bg-amber-50 px-3 py-2 text-center text-sm font-semibold text-amber-950 shadow-sm transition hover:bg-amber-100"
+            >
+              Create institute
+            </Link>
+            <Link
+              href="/platform"
+              className="text-sm font-medium text-amber-900 underline decoration-amber-800/40 underline-offset-4 hover:text-amber-950"
+            >
+              ← Back to platform
+            </Link>
+          </div>
         </div>
 
         {loadError ? (
@@ -63,9 +72,15 @@ export default async function PlatformInstitutesPage() {
             {loadError}
           </div>
         ) : institutes.length === 0 ? (
-          <p className="rounded-2xl border border-slate-200/80 bg-white px-4 py-8 text-center text-sm text-slate-600 shadow-sm">
-            No institutes found yet.
-          </p>
+          <div className="rounded-2xl border border-slate-200/80 bg-white px-4 py-8 text-center shadow-sm">
+            <p className="text-sm text-slate-600">No institutes found yet.</p>
+            <Link
+              href="/platform/institutes/new"
+              className="mt-4 inline-flex rounded-lg border border-amber-200/90 bg-amber-50 px-4 py-2.5 text-sm font-semibold text-amber-950 shadow-sm transition hover:bg-amber-100"
+            >
+              Create institute
+            </Link>
+          </div>
         ) : (
           <>
             <ul className="space-y-3 sm:hidden">

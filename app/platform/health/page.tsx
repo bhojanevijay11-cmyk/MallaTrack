@@ -9,6 +9,7 @@ import {
   type PlatformHealthIssue,
 } from "@/lib/platform-health";
 import { getInstituteBranchOptions } from "@/lib/platform-institutes";
+import { logError } from "@/lib/server-log";
 
 function SeverityBadge({
   severity,
@@ -83,7 +84,7 @@ export default async function PlatformHealthPage() {
   try {
     report = await getPlatformHealthReport();
   } catch (e) {
-    console.error("[platform/health]", e);
+    logError("platform_health_load_failed", { route: "/platform/health" }, e);
     loadError = "Unable to load health data. Try again later.";
   }
 

@@ -264,7 +264,9 @@ export function BatchManageView({
       setUnassignedCandidates([]);
       setInstituteBranches([]);
     } catch (e) {
-      console.error(e);
+      if (process.env.NODE_ENV === "development") {
+        console.error(e);
+      }
       setLoadError("Failed to load data.");
       setBatch(null);
       setUnassignedCandidates([]);
@@ -437,7 +439,9 @@ export function BatchManageView({
       }
       await load();
     } catch (e) {
-      console.error(e);
+      if (process.env.NODE_ENV === "development") {
+        console.error(e);
+      }
       setActionError("Could not assign student.");
     } finally {
       setBusyStudentId(null);
@@ -495,7 +499,9 @@ export function BatchManageView({
       setEditOk("Saved.");
       await load();
     } catch (e) {
-      console.error(e);
+      if (process.env.NODE_ENV === "development") {
+        console.error(e);
+      }
       setEditError("Could not save batch.");
     } finally {
       setEditSaving(false);

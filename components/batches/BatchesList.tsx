@@ -149,7 +149,9 @@ export function BatchesList({ showCreateBatch = true, viewerRole }: BatchesListP
       );
     } catch (err) {
       if (signal?.aborted) return;
-      console.error(err);
+      if (process.env.NODE_ENV === "development") {
+        console.error(err);
+      }
       setListError("Failed to load batches.");
       setBatches([]);
     }
@@ -194,7 +196,9 @@ export function BatchesList({ showCreateBatch = true, viewerRole }: BatchesListP
         await load();
       }
     } catch (err) {
-      console.error(err);
+      if (process.env.NODE_ENV === "development") {
+        console.error(err);
+      }
       setActionError("Failed to update status.");
     } finally {
       setUpdatingId(null);
