@@ -95,8 +95,11 @@ export function OnboardingForm() {
 
         <div className="flex flex-col gap-1.5">
           <label htmlFor="branchName" className="text-sm font-medium text-slate-800">
-            First branch name <span className="text-red-600">*</span>
+            First branch location / center name <span className="text-red-600">*</span>
           </label>
+          <p className="text-xs leading-snug text-slate-500">
+            Enter only the branch location or center label, for example: Juhu, Bandra, Pune Main Center.
+          </p>
           <input
             id="branchName"
             name="branchName"
@@ -107,7 +110,7 @@ export function OnboardingForm() {
             value={branchName}
             onChange={(ev) => setBranchName(ev.target.value)}
             className="rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm text-slate-900 outline-none ring-slate-300 placeholder:text-slate-400 focus:border-slate-400 focus:ring-2 disabled:opacity-60"
-            placeholder="e.g. Main campus"
+            placeholder="Juhu"
           />
         </div>
 

@@ -51,7 +51,7 @@ export function BranchControlCenter({
         <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-amber-900/90">
           Branch control center
         </p>
-        <h1 className="mt-1 text-2xl font-bold tracking-tight text-slate-900">{branch.name}</h1>
+        <h2 className="mt-1 text-2xl font-bold tracking-tight text-slate-900">{branch.name}</h2>
         <p className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-slate-600">
           <span className="inline-flex items-center gap-1.5">
             <Calendar className="h-4 w-4 text-slate-400" aria-hidden />

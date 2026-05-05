@@ -13,6 +13,7 @@ export function ProgressRow({
   onSelect: () => void;
 }) {
   const summary = scoreSummaryFromAssessment(assessment);
+  const branchLoc = assessment.batch.branchName?.trim() || null;
   return (
     <button
       type="button"
@@ -24,6 +25,11 @@ export function ProgressRow({
         <p className="mt-0.5 text-sm text-slate-600">
           {formatAssessmentDateYmd(assessment.assessmentDate)}
         </p>
+        {branchLoc ? (
+          <p className="mt-0.5 text-xs text-slate-600">
+            <span className="font-semibold text-slate-500">Branch:</span> {branchLoc}
+          </p>
+        ) : null}
       </div>
       <div className="flex flex-wrap items-center gap-2 sm:justify-end">
         {summary ? (

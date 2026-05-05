@@ -12,6 +12,7 @@ type StudentOption = {
   fullName: string;
   batchName: string | null;
   batchId?: string | null;
+  branchLocationName?: string | null;
 };
 
 type ProgressEntryDTO = {
@@ -86,6 +87,7 @@ export function ProgressWorkspace({
       fullName: s.fullName,
       batchName: s.batchName,
       batchId: s.batchId ?? null,
+      branchLocationName: s.branchLocationName ?? null,
     }));
     return (
       <AssistantProgressV2Workspace
@@ -296,6 +298,9 @@ export function ProgressWorkspace({
                 <option key={s.id} value={s.id}>
                   {s.fullName}
                   {s.batchName ? ` · ${s.batchName}` : ""}
+                  {s.branchLocationName?.trim()
+                    ? ` · Branch: ${s.branchLocationName.trim()}`
+                    : ""}
                 </option>
               ))}
             </select>
@@ -326,6 +331,13 @@ export function ProgressWorkspace({
             ) : (
               <> · Unassigned</>
             )}
+            {selected.branchLocationName?.trim() ? (
+              <>
+                {" "}
+                · Branch:{" "}
+                <span className="text-slate-700">{selected.branchLocationName.trim()}</span>
+              </>
+            ) : null}
           </p>
         ) : null}
 

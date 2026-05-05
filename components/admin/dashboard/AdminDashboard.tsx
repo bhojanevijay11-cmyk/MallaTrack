@@ -1,4 +1,3 @@
-import { Plus } from "lucide-react";
 import Link from "next/link";
 import { AttendanceTrendCard } from "./AttendanceTrendCard";
 import { DashboardHeader } from "./DashboardHeader";
@@ -69,16 +68,6 @@ export function AdminDashboard({
                       Branches
                     </Link>
                   </li>
-                  <li>
-                    <Link className="underline-offset-2 hover:underline" href="/batches">
-                      Batches
-                    </Link>
-                  </li>
-                  <li>
-                    <Link className="underline-offset-2 hover:underline" href="/coaches">
-                      Coaches
-                    </Link>
-                  </li>
                 </ul>
               </nav>
               {coachProgressAlerts ? (
@@ -99,14 +88,6 @@ export function AdminDashboard({
           </div>
         </div>
       </div>
-
-      <Link
-        href="/students/new"
-        className="fixed bottom-6 right-6 z-40 flex h-14 w-14 cursor-pointer items-center justify-center rounded-full bg-primary text-primary-foreground shadow-glass transition-all duration-200 ease-out hover:shadow-lg active:scale-[0.97] md:hidden"
-        aria-label="Add student"
-      >
-        <Plus className="h-6 w-6" aria-hidden />
-      </Link>
     </div>
   );
 }

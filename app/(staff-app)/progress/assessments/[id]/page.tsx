@@ -94,6 +94,7 @@ export default async function EditProgressAssessmentPage({
     id: s.id,
     fullName: s.fullName,
     batchName: s.batch?.name?.trim() || null,
+    branchLocationName: s.batch?.branch?.name?.trim() || null,
     batchId: s.batchId ?? null,
   }));
 

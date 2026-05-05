@@ -170,6 +170,8 @@ export default async function StudentProfilePage({
     student.batchId && student.batch
       ? student.batch.name?.trim() || "Untitled batch"
       : "Unassigned";
+  const branchLocation =
+    student.batch?.branch?.name?.trim() || null;
 
   return (
     <NavPlaceholder
@@ -205,6 +207,12 @@ export default async function StudentProfilePage({
               Batch
             </p>
             <p className="mt-0.5 text-sm font-medium text-slate-900">{batchLabel}</p>
+          </div>
+          <div>
+            <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-slate-400">
+              Branch
+            </p>
+            <p className="mt-0.5 text-sm font-medium text-slate-900">{branchLocation ?? "—"}</p>
           </div>
           <div>
             <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-slate-400">

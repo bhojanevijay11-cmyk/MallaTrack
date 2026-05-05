@@ -24,10 +24,16 @@ function parseNames(body: unknown): { ok: true; instituteName: string; branchNam
     return { ok: false, error: "Institute name is too long." };
   }
   if (branchName.length < 1) {
-    return { ok: false, error: "Branch name is required." };
+    return {
+      ok: false,
+      error: "Branch location / center name is required.",
+    };
   }
   if (branchName.length > 200) {
-    return { ok: false, error: "Branch name is too long." };
+    return {
+      ok: false,
+      error: "Branch location / center name is too long.",
+    };
   }
   return { ok: true, instituteName, branchName };
 }

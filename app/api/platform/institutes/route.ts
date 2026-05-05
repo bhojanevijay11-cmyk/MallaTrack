@@ -25,6 +25,7 @@ const MAX_NAME_LEN = 200;
 function parseProvisionBody(body: unknown): {
   ok: true;
   instituteName: string;
+  firstBranchLocationName: string;
   adminFullName: string;
   adminEmail: string;
   temporaryPassword: string;
@@ -35,6 +36,10 @@ function parseProvisionBody(body: unknown): {
   const o = body as Record<string, unknown>;
   const instituteName =
     typeof o.instituteName === "string" ? o.instituteName.trim() : "";
+  const firstBranchLocationName =
+    typeof o.firstBranchLocationName === "string"
+      ? o.firstBranchLocationName.trim()
+      : "";
   const adminFullName =
     typeof o.adminFullName === "string" ? o.adminFullName.trim() : "";
   const adminEmailRaw =
@@ -48,6 +53,18 @@ function parseProvisionBody(body: unknown): {
   }
   if (instituteName.length > MAX_NAME_LEN) {
     return { ok: false, message: "Institute name is too long." };
+  }
+  if (!firstBranchLocationName) {
+    return {
+      ok: false,
+      message: "Branch location / center name is required.",
+    };
+  }
+  if (firstBranchLocationName.length > MAX_NAME_LEN) {
+    return {
+      ok: false,
+      message: "Branch location / center name is too long.",
+    };
   }
   if (!adminFullName) {
     return { ok: false, message: "Admin full name is required." };
@@ -67,6 +84,7 @@ function parseProvisionBody(body: unknown): {
   return {
     ok: true,
     instituteName,
+    firstBranchLocationName,
     adminFullName,
     adminEmail,
     temporaryPassword,
@@ -122,8 +140,13 @@ export async function POST(req: Request) {
     });
   }
 
-  const { instituteName, adminFullName, adminEmail, temporaryPassword } =
-    parsed;
+  const {
+    instituteName,
+    firstBranchLocationName,
+    adminFullName,
+    adminEmail,
+    temporaryPassword,
+  } = parsed;
 
   try {
     const existingUser = await prisma.user.findUnique({
@@ -144,6 +167,13 @@ export async function POST(req: Request) {
       const institute = await tx.institute.create({
         data: { name: instituteName },
         select: { id: true, name: true },
+      });
+      await tx.branch.create({
+        data: {
+          name: firstBranchLocationName,
+          instituteId: institute.id,
+        },
+        select: { id: true },
       });
       const adminUser = await tx.user.create({
         data: {
@@ -166,6 +196,7 @@ export async function POST(req: Request) {
       instituteId: result.institute.id,
       metadata: {
         instituteName: result.institute.name,
+        firstBranchLocationName,
         adminUserId: result.adminUser.id,
         adminEmail: result.adminUser.email,
         adminFullName,

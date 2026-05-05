@@ -40,26 +40,6 @@ export const EMPTY_ATTENDANCE_TREND: AttendanceTrendPoint[] = [];
 
 export const QUICK_ACTIONS: QuickActionDef[] = [
   {
-    id: "invite-staff",
-    label: "Invite Staff",
-    description: "Add admins & coaches",
-  },
-  {
-    id: "create-batch",
-    label: "Create Batch",
-    description: "New group or cohort",
-  },
-  {
-    id: "mark-attendance",
-    label: "Mark Attendance",
-    description: "Today’s sessions",
-  },
-  {
-    id: "assign-coach",
-    label: "Assign Head Coach",
-    description: "Batch or student",
-  },
-  {
     id: "view-reports",
     label: "View Reports",
     description: "Attendance & progress",

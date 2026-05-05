@@ -26,5 +26,10 @@ export type ProgressAssessmentListItem = {
   createdAt: string;
   updatedAt: string;
   student: { id: string; fullName: string };
-  batch: { id: string; name: string | null };
+  batch: {
+    id: string;
+    name: string | null;
+    /** Branch location / center label when the batch is linked to a branch. */
+    branchName?: string | null;
+  };
 };

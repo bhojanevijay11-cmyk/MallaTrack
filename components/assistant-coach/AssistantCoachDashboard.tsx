@@ -10,7 +10,6 @@ import {
   Dumbbell,
   Layers,
   LayoutDashboard,
-  LineChart,
   PenLine,
   Sun,
   Users,
@@ -41,7 +40,6 @@ const BOTTOM_NAV = [
   { href: "/students", label: "Kids", icon: Users },
   { href: "/progress", label: "Progress", icon: PenLine },
   { href: "/batches", label: "Batches", icon: Layers },
-  { href: "/reports", label: "Stats", icon: LineChart },
   { href: "/attendance", label: "Mark", icon: Check },
 ] as const;
 

@@ -66,6 +66,12 @@ function StudentPanel({ b }: { b: ParentStudentDashboardBundle }) {
           ) : (
             <p className="mt-0.5 text-xs text-slate-400">Not assigned to a batch yet</p>
           )}
+          {b.branchLocationName?.trim() ? (
+            <p className="mt-1 max-w-sm text-xs font-medium leading-snug text-slate-600">
+              <span className="font-semibold text-slate-500">Branch:</span>{" "}
+              {b.branchLocationName.trim()}
+            </p>
+          ) : null}
           <p className="mt-1.5 text-[10px] font-semibold uppercase tracking-[0.16em] text-slate-400">
             {b.status.trim().toUpperCase() === "ACTIVE" ? "Active" : b.status}
           </p>

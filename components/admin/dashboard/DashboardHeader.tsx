@@ -1,7 +1,4 @@
-import { Plus } from "lucide-react";
-import Link from "next/link";
 import type { QuickActionDef } from "./mockData";
-import { DashboardUserMenu } from "./DashboardUserMenu";
 import { QuickActionsStrip } from "./QuickActionsStrip";
 type Props = {
   dateLabel: string;
@@ -35,7 +32,7 @@ export function DashboardHeader({ dateLabel, quickActions, instituteLabel }: Pro
           ) : null}
         </div>
 
-        <div className="min-w-0 lg:flex lg:items-center lg:justify-center lg:self-center">
+        <div className="min-w-0 lg:flex lg:items-start lg:justify-center lg:self-start">
           <QuickActionsStrip actions={quickActions} />
         </div>
 
@@ -43,16 +40,6 @@ export function DashboardHeader({ dateLabel, quickActions, instituteLabel }: Pro
           <p className="hidden text-right text-[11px] font-medium tabular-nums text-slate-400 lg:block sm:text-xs">
             {dateLabel}
           </p>
-          <div className="flex items-center justify-end gap-2 sm:gap-2.5">
-            <Link
-              href="/students/new"
-              className="hidden items-center gap-1.5 rounded-xl bg-primary px-3 py-2 text-sm font-semibold text-primary-foreground shadow-sm cursor-pointer transition-all duration-200 hover:shadow-soft active:scale-[0.97] sm:inline-flex"
-            >
-              <Plus className="h-4 w-4" aria-hidden />
-              Add Student
-            </Link>
-            <DashboardUserMenu />
-          </div>
         </div>
       </div>
     </header>

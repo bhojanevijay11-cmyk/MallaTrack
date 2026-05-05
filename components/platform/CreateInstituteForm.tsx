@@ -10,6 +10,7 @@ const inputClass =
 export function CreateInstituteForm() {
   const router = useRouter();
   const [instituteName, setInstituteName] = useState("");
+  const [firstBranchLocationName, setFirstBranchLocationName] = useState("");
   const [adminFullName, setAdminFullName] = useState("");
   const [adminEmail, setAdminEmail] = useState("");
   const [temporaryPassword, setTemporaryPassword] = useState("");
@@ -26,6 +27,7 @@ export function CreateInstituteForm() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           instituteName,
+          firstBranchLocationName,
           adminFullName,
           adminEmail,
           temporaryPassword,
@@ -76,7 +78,30 @@ export function CreateInstituteForm() {
             value={instituteName}
             onChange={(e) => setInstituteName(e.target.value)}
             className={inputClass}
-            placeholder="e.g. MallaTrack Pilot Institute"
+            placeholder="e.g. Sane Guruji Arogya Mandir"
+          />
+        </div>
+        <div>
+          <label
+            htmlFor="firstBranchLocationName"
+            className="block text-[11px] font-semibold uppercase tracking-[0.08em] text-slate-500"
+          >
+            First branch location / center name
+          </label>
+          <p className="mt-0.5 text-xs leading-snug text-slate-500">
+            Enter only the first center&apos;s location label (not the institute name), for example:
+            Juhu, Bandra, Pune Main Center.
+          </p>
+          <input
+            id="firstBranchLocationName"
+            name="firstBranchLocationName"
+            type="text"
+            autoComplete="off"
+            required
+            value={firstBranchLocationName}
+            onChange={(e) => setFirstBranchLocationName(e.target.value)}
+            className={inputClass}
+            placeholder="Juhu"
           />
         </div>
         <div>

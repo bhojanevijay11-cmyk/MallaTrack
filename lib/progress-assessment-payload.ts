@@ -3,13 +3,17 @@ import { overallScoreForDisplay } from "@/lib/progress-assessment-category-score
 
 export type ProgressAssessmentListRow = ProgressAssessment & {
   student: Pick<Student, "id" | "fullName">;
-  batch: Pick<Batch, "id" | "name">;
+  batch: Pick<Batch, "id" | "name"> & {
+    branch: { name: string | null } | null;
+  };
   authorUser: Pick<User, "id" | "email">;
 };
 
 export type ProgressAssessmentDetail = ProgressAssessment & {
   student: Pick<Student, "id" | "fullName" | "batchId">;
-  batch: Pick<Batch, "id" | "name">;
+  batch: Pick<Batch, "id" | "name"> & {
+    branch: { name: string | null } | null;
+  };
   authorUser: Pick<User, "id" | "email">;
   submittedByUser: Pick<User, "id" | "email"> | null;
   reviewedByUser: Pick<User, "id" | "email"> | null;
@@ -53,7 +57,11 @@ export function serializeProgressAssessmentListRow(row: ProgressAssessmentListRo
     createdAt: row.createdAt.toISOString(),
     updatedAt: row.updatedAt.toISOString(),
     student: { id: row.student.id, fullName: row.student.fullName },
-    batch: { id: row.batch.id, name: row.batch.name },
+    batch: {
+      id: row.batch.id,
+      name: row.batch.name,
+      branchName: row.batch.branch?.name?.trim() ? row.batch.branch.name.trim() : null,
+    },
     authorUser: userSnippet(row.authorUser),
   };
 }
@@ -66,7 +74,11 @@ export function serializeProgressAssessmentDetail(row: ProgressAssessmentDetail)
       fullName: row.student.fullName,
       batchId: row.student.batchId,
     },
-    batch: { id: row.batch.id, name: row.batch.name },
+    batch: {
+      id: row.batch.id,
+      name: row.batch.name,
+      branchName: row.batch.branch?.name?.trim() ? row.batch.branch.name.trim() : null,
+    },
     authorUser: userSnippet(row.authorUser),
     submittedByUser: userSnippet(row.submittedByUser),
     reviewedByUser: userSnippet(row.reviewedByUser),
@@ -132,7 +144,7 @@ export const progressAssessmentListSelect = {
       name: true,
       instituteId: true,
       branchId: true,
-      branch: { select: { instituteId: true } },
+      branch: { select: { instituteId: true, name: true } },
     },
   },
   authorUser: { select: { id: true, email: true } },
@@ -160,7 +172,7 @@ export const progressAssessmentDetailInclude = {
       name: true,
       instituteId: true,
       branchId: true,
-      branch: { select: { instituteId: true } },
+      branch: { select: { instituteId: true, name: true } },
     },
   },
   authorUser: { select: { id: true, email: true } },

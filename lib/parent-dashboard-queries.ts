@@ -109,6 +109,8 @@ export type ParentStudentDashboardBundle = {
   tabLabel: string;
   status: string;
   batchName: string | null;
+  /** Branch location / center label from the student's batch. */
+  branchLocationName: string | null;
   coachName: string | null;
   scheduleLine: string | null;
   /** Null when no attendance rows exist in the rolling last 7 India calendar days. */
@@ -194,6 +196,12 @@ function buildParentLatestProgressReport(
   };
 }
 
+export type ParentProgressAssessmentDetailResult = {
+  report: ParentLatestProgressReport;
+  studentFullName: string;
+  branchLocationName: string | null;
+};
+
 /**
  * Full APPROVED assessment for parent detail page. Enforces child linkage and operational guard.
  * Non-APPROVED or other parents' children → null (caller should 404).
@@ -202,7 +210,7 @@ export async function getParentProgressAssessmentDetail(
   parentUserId: string,
   instituteId: string,
   assessmentId: string,
-): Promise<ParentLatestProgressReport | null> {
+): Promise<ParentProgressAssessmentDetailResult | null> {
   const aid = typeof assessmentId === "string" ? assessmentId.trim() : "";
   if (!aid) return null;
 
@@ -235,7 +243,10 @@ export async function getParentProgressAssessmentDetail(
   if (!progressAssessmentRecordOperationallyVisible(row as ProgressAssessmentGuardrailRow)) {
     return null;
   }
-  return buildParentLatestProgressReport(row, row.exercises);
+  const report = buildParentLatestProgressReport(row, row.exercises);
+  const studentFullName = row.student?.fullName?.trim() || "";
+  const branchLocationName = row.batch?.branch?.name?.trim() || null;
+  return { report, studentFullName, branchLocationName };
 }
 
 async function bundleForStudent(
@@ -248,12 +259,14 @@ async function bundleForStudent(
       startTime: string | null;
       endTime: string | null;
       coach: { fullName: string | null } | null;
+      branch: { name: string } | null;
     } | null;
   },
   instituteId: string,
   attendanceSummary: ParentAttendanceSummary7d | null,
 ): Promise<ParentStudentDashboardBundle> {
   const batchName = s.batch?.name?.trim() || null;
+  const branchLocationName = s.batch?.branch?.name?.trim() || null;
   const coachName = s.batch?.coach?.fullName?.trim() || null;
   const scheduleLine = formatScheduleLine(s.batch);
 
@@ -370,6 +383,7 @@ async function bundleForStudent(
     tabLabel: firstNameToken(s.fullName),
     status: s.status,
     batchName,
+    branchLocationName,
     coachName,
     scheduleLine,
     attendanceSummary,
@@ -406,6 +420,7 @@ export async function getParentDashboardBundles(
           startTime: true,
           endTime: true,
           coach: { select: { fullName: true } },
+          branch: { select: { name: true } },
         },
       },
     },

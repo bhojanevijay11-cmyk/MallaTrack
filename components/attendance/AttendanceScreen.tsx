@@ -2,6 +2,8 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useSearchParams } from "next/navigation";
+import { useSession } from "next-auth/react";
+import { instituteBranchDisplayLine } from "@/lib/branch-display";
 import type { AttendanceMarkStatus } from "@/lib/attendance-status";
 import {
   isAbsentStatus,
@@ -23,6 +25,7 @@ type BatchOption = {
   startTime: string | null;
   endTime: string | null;
   studentCount: number;
+  branchName?: string | null;
 };
 
 type StudentRow = {
@@ -134,6 +137,7 @@ export function AttendanceScreen({
   reserveMobileTabBar = false,
   staffVariant = "lead_staff",
 }: AttendanceScreenProps) {
+  const { data: session } = useSession();
   const searchParams = useSearchParams();
   const urlBatchId = searchParams.get("batchId")?.trim() ?? "";
   const appliedUrlBatchId = useRef(false);
@@ -283,6 +287,13 @@ export function AttendanceScreen({
     [dateYmd, selectedBatch],
   );
 
+  const instituteBranchSubtitle = useMemo(() => {
+    const org = session?.user?.instituteName?.trim() || "";
+    const loc = selectedBatch?.branchName?.trim() || "";
+    const line = instituteBranchDisplayLine(org || null, loc || null);
+    return line || null;
+  }, [session?.user?.instituteName, selectedBatch?.branchName]);
+
   const counts = useMemo(() => {
     let present = 0;
     let absent = 0;
@@ -419,6 +430,11 @@ export function AttendanceScreen({
           <p className="mt-0.5 text-sm font-medium leading-snug text-slate-700">
             {subtitle}
           </p>
+          {instituteBranchSubtitle ? (
+            <p className="mt-1 text-xs font-medium leading-snug text-slate-600">
+              {instituteBranchSubtitle}
+            </p>
+          ) : null}
           <p className="mt-1 text-xs leading-snug text-slate-500">
             India calendar day for this screen:{" "}
             <span className="font-medium text-slate-600">{dateYmd}</span>

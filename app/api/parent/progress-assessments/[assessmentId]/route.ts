@@ -31,16 +31,24 @@ export async function GET(
   }
 
   try {
-    const report = await getParentProgressAssessmentDetail(
+    const payload = await getParentProgressAssessmentDetail(
       user.id,
       user.instituteId,
       assessmentId,
     );
-    if (!report) {
+    if (!payload) {
       return apiError({ code: "PARENT_ASSESSMENT_NOT_FOUND", message: "Not found.", status: 404 });
     }
 
-    return NextResponse.json({ ok: true, report }, { status: 200 });
+    return NextResponse.json(
+      {
+        ok: true,
+        report: payload.report,
+        studentFullName: payload.studentFullName,
+        branchLocationName: payload.branchLocationName,
+      },
+      { status: 200 },
+    );
   } catch (e) {
     logError("parent.progress_assessment_detail_failed", logCtx, e, {
       instituteId: user.instituteId,

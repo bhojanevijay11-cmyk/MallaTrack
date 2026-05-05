@@ -27,7 +27,13 @@ import {
 } from "@/lib/progress-assessment-category-scores";
 import { getApiErrorMessageFromPayload } from "@/lib/api-client-error";
 
-type StudentOption = { id: string; fullName: string; batchName: string | null; batchId: string | null };
+type StudentOption = {
+  id: string;
+  fullName: string;
+  batchName: string | null;
+  batchId: string | null;
+  branchLocationName?: string | null;
+};
 
 type LocalExerciseRow = {
   key: string;
@@ -150,6 +156,7 @@ function indicatorLabelFromCode(code: string | null | undefined): string {
 type AssessmentPageMeta = {
   studentFullName: string;
   batchName: string | null;
+  batchBranchName: string | null;
   submittedByEmail: string | null;
   submittedAtIso: string | null;
   authorEmail: string | null;
@@ -160,6 +167,7 @@ function pageMetaFromSeed(a: ProgressAssessmentListItem | null): AssessmentPageM
     return {
       studentFullName: "",
       batchName: null,
+      batchBranchName: null,
       submittedByEmail: null,
       submittedAtIso: null,
       authorEmail: null,
@@ -169,6 +177,7 @@ function pageMetaFromSeed(a: ProgressAssessmentListItem | null): AssessmentPageM
   return {
     studentFullName: a.student?.fullName?.trim() || "",
     batchName: a.batch?.name?.trim() || null,
+    batchBranchName: a.batch?.branchName?.trim() || null,
     submittedByEmail: d.submittedByUser?.email?.trim() || null,
     submittedAtIso: a.submittedAt,
     authorEmail: d.authorUser?.email?.trim() || null,
@@ -437,6 +446,11 @@ export function ProgressForm({
     selectedStudent?.batchName?.trim() ||
     pageMeta.batchName ||
     initialAssessment?.batch?.name?.trim() ||
+    null;
+  const branchLocationDisplay =
+    selectedStudent?.branchLocationName?.trim() ||
+    pageMeta.batchBranchName ||
+    initialAssessment?.batch?.branchName?.trim() ||
     null;
 
   const submittedLine =
@@ -808,6 +822,9 @@ export function ProgressForm({
                       <option key={s.id} value={s.id}>
                         {s.fullName}
                         {s.batchName ? ` · ${s.batchName}` : ""}
+                        {s.branchLocationName?.trim()
+                          ? ` · Branch: ${s.branchLocationName.trim()}`
+                          : ""}
                         {!s.batchId ? " (no batch)" : ""}
                       </option>
                     ))}
@@ -1371,6 +1388,11 @@ export function ProgressForm({
                 <div className="rounded-xl border border-slate-100 bg-white px-4 py-3 shadow-sm ring-1 ring-slate-50">
                   <p className="text-[10px] font-semibold uppercase tracking-wide text-slate-400">Batch</p>
                   <p className="mt-1 truncate text-sm font-semibold text-slate-900">{batchDisplayName ?? "—"}</p>
+                  {branchLocationDisplay ? (
+                    <p className="mt-1 truncate text-xs font-medium text-slate-600">
+                      <span className="font-semibold text-slate-500">Branch:</span> {branchLocationDisplay}
+                    </p>
+                  ) : null}
                 </div>
                 <div className="rounded-xl border border-slate-100 bg-white px-4 py-3 shadow-sm ring-1 ring-slate-50">
                   <p className="text-[10px] font-semibold uppercase tracking-wide text-slate-400">

@@ -8,6 +8,7 @@ type StudentOption = {
   fullName: string;
   batchName: string | null;
   batchId: string | null;
+  branchLocationName?: string | null;
 };
 
 export function ProgressAssessmentCreateClient({

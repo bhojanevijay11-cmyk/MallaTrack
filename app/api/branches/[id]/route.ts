@@ -49,7 +49,7 @@ export async function PATCH(
   if (!name) {
     return apiError({
       code: "BRANCH_UPDATE_BAD_REQUEST",
-      message: "Branch name is required.",
+      message: "Branch location / center name is required.",
       status: 400,
     });
   }

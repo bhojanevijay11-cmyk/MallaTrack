@@ -189,6 +189,12 @@ export function ProgressReviewDetail({
                   </dd>
                 </div>
                 <div className="flex min-w-0 flex-wrap items-baseline gap-x-1.5 gap-y-0">
+                  <dt className="shrink-0 font-semibold text-slate-500">Branch</dt>
+                  <dd className="min-w-0 truncate font-medium text-slate-900">
+                    {detail.batch.branchName?.trim() || "—"}
+                  </dd>
+                </div>
+                <div className="flex min-w-0 flex-wrap items-baseline gap-x-1.5 gap-y-0">
                   <dt className="shrink-0 font-semibold text-slate-500">Session</dt>
                   <dd className="tabular-nums font-medium text-slate-900">
                     {formatAssessmentDateYmd(detail.assessmentDate)}

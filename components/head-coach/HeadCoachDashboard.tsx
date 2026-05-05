@@ -91,15 +91,6 @@ export function HeadCoachDashboard({
                     ({snap.progressV2.pendingReviewCount})
                   </span>
                 </Link>
-                {att && att.expectedCount > 0 && !att.hasSubmission ? (
-                  <Link
-                    href="/attendance"
-                    className="inline-flex w-full items-center justify-center gap-1 rounded-lg border border-amber-300/80 bg-amber-50/90 px-3 py-2 text-xs font-semibold text-amber-950 shadow-sm transition hover:bg-amber-50"
-                  >
-                    Mark today&apos;s attendance
-                    <ChevronRight className="h-3.5 w-3.5" aria-hidden />
-                  </Link>
-                ) : null}
                 <Link
                   href={`/students?readiness=${READINESS_LEVEL.NEEDS_WORK}`}
                   className="inline-flex w-full items-center justify-center gap-1 rounded-lg border border-slate-200 bg-white px-3 py-2 text-xs font-medium text-slate-800 shadow-sm transition hover:bg-slate-50"

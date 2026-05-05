@@ -29,6 +29,7 @@ type StudentsResponse =
 type BatchSummary = {
   id: string;
   name: string | null;
+  branch?: { name: string | null } | null;
 };
 
 type StudentDTO = {
@@ -69,6 +70,11 @@ function batchDisplayName(student: StudentDTO): string {
   if (!student.batchId || !student.batch) return "Unassigned";
   const n = student.batch.name?.trim();
   return n || "Untitled batch";
+}
+
+function branchLocationLabel(student: StudentDTO): string | null {
+  const b = student.batch?.branch?.name?.trim();
+  return b || null;
 }
 
 function toProgressAlertRows(items: ReadonlyArray<ProgressAssessmentListItem>) {
@@ -123,6 +129,7 @@ function StudentCard({
 }) {
   const status = normalizeStatus(student.status);
   const batchLabel = batchDisplayName(student);
+  const branchLabel = branchLocationLabel(student);
   const profileHref = `/students/${student.id}${listNavSuffix}`;
   const threeSixtyHref = `/students/${student.id}/360${listNavSuffix}`;
 
@@ -163,6 +170,13 @@ function StudentCard({
                 {batchLabel}
               </span>
             </p>
+            {branchLabel ? (
+              <p className="mt-1 text-xs text-slate-500">
+                <span className="font-medium text-slate-400">Branch</span>
+                <span className="mx-1 text-slate-300">·</span>
+                <span className="text-slate-700">{branchLabel}</span>
+              </p>
+            ) : null}
           </div>
         </div>
       </Link>

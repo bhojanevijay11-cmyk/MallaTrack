@@ -17,7 +17,7 @@ export type ProgressAssessmentExerciseDTO = {
 /** GET /api/progress/assessments/[id] payload (subset used by review UI). */
 export type ProgressAssessmentDetailPayload = ProgressAssessmentListItem & {
   student: { id: string; fullName: string; batchId: string | null };
-  batch: { id: string; name: string | null };
+  batch: { id: string; name: string | null; branchName?: string | null };
   authorUser: { id: string; email: string };
   submittedByUser: { id: string; email: string } | null;
   reviewedByUser: { id: string; email: string } | null;

@@ -5,6 +5,7 @@ import { NavPlaceholder } from "@/components/admin/NavPlaceholder";
 import { BranchControlCenter } from "@/components/admin/branches/BranchControlCenter";
 import { authOptions } from "@/lib/auth";
 import { getBranchControlCenterData } from "@/lib/branch-control-center-data";
+import { instituteBranchDisplayLine } from "@/lib/branch-display";
 import { ROLE_ADMIN, roleHomePath } from "@/lib/roles";
 
 type PageProps = { params: Promise<{ id: string }> };
@@ -31,11 +32,16 @@ export default async function BranchDetailPage({ params }: PageProps) {
     notFound();
   }
 
+  const pageTitle = instituteBranchDisplayLine(
+    session.user.instituteName?.trim() || null,
+    data.branch.name,
+  );
+
   return (
     <NavPlaceholder
-      title={data.branch.name}
+      title={pageTitle}
       description="Overview, staff roster, and batches for this branch. Detailed batch operations stay on the batch manage page."
-      tenantLine={session.user.instituteName?.trim() || null}
+      tenantLine={null}
       maxWidth="wide"
       dashboardShell
       backHref="/branches"

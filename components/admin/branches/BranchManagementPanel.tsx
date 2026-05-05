@@ -77,7 +77,7 @@ export function BranchManagementPanel({ initialBranches }: Props) {
     if (!rename) return;
     const next = renameInput.trim();
     if (!next) {
-      setRenameError("Branch name is required.");
+      setRenameError("Branch location / center name is required.");
       return;
     }
     setRenameBusy(true);
@@ -140,8 +140,12 @@ export function BranchManagementPanel({ initialBranches }: Props) {
         <form onSubmit={onSubmit} className="flex flex-col gap-4 sm:flex-row sm:flex-wrap sm:items-end sm:gap-5">
           <div className="min-w-0 flex-1 sm:max-w-md">
             <label className="text-sm font-medium text-slate-800" htmlFor="branchName">
-              Branch name <span className="text-red-600">*</span>
+              Branch location / center name <span className="text-red-600">*</span>
             </label>
+            <p className="mt-1 text-xs leading-snug text-slate-500">
+              Enter only the branch location or center label, for example: Juhu, Bandra, Pune Main
+              Center.
+            </p>
             <input
               id="branchName"
               type="text"
@@ -150,7 +154,7 @@ export function BranchManagementPanel({ initialBranches }: Props) {
               value={name}
               onChange={(e) => setName(e.target.value)}
               className="mt-1.5 w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm text-slate-900 outline-none ring-slate-300 placeholder:text-slate-400 focus:border-slate-400 focus:ring-2 disabled:opacity-60"
-              placeholder="e.g. North campus"
+              placeholder="Juhu"
               autoComplete="off"
             />
           </div>
@@ -251,7 +255,8 @@ export function BranchManagementPanel({ initialBranches }: Props) {
               Rename branch
             </h3>
             <p className="mt-1 text-sm text-slate-600">
-              Update the display name for <span className="font-medium">{rename.name}</span>.
+              Update the location or center label for{" "}
+              <span className="font-medium">{rename.name}</span>.
             </p>
             {renameError ? (
               <p className="mt-3 rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-sm text-amber-900">
@@ -259,13 +264,14 @@ export function BranchManagementPanel({ initialBranches }: Props) {
               </p>
             ) : null}
             <label className="mt-4 block text-xs font-semibold uppercase tracking-wide text-slate-400">
-              Branch name
+              Branch location / center name
             </label>
             <input
               type="text"
               value={renameInput}
               onChange={(e) => setRenameInput(e.target.value)}
               disabled={renameBusy}
+              placeholder="Juhu"
               className="mt-1 w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm text-slate-900 shadow-sm disabled:opacity-60"
               autoComplete="off"
             />

@@ -1,30 +1,16 @@
 import type { ReactNode } from "react";
-import {
-  ClipboardCheck,
-  FileBarChart,
-  Layers,
-  UserCog,
-  UserPlus,
-} from "lucide-react";
+import { FileBarChart } from "lucide-react";
 import Link from "next/link";
 import type { QuickActionDef } from "./mockData";
 
 type Props = { actions: QuickActionDef[] };
 
 const ACTION_HREF: Record<string, string> = {
-  "create-batch": "/batches/new",
-  "mark-attendance": "/attendance",
-  "assign-coach": "/coaches/assign",
   "view-reports": "/reports",
-  "invite-staff": "/admin/invites",
 };
 
 const iconMap: Record<string, ReactNode> = {
-  "create-batch": <Layers className="h-3 w-3" aria-hidden />,
-  "mark-attendance": <ClipboardCheck className="h-3 w-3" aria-hidden />,
-  "assign-coach": <UserCog className="h-3 w-3" aria-hidden />,
   "view-reports": <FileBarChart className="h-3 w-3" aria-hidden />,
-  "invite-staff": <UserPlus className="h-3 w-3" aria-hidden />,
 };
 
 const actionClass =
@@ -33,7 +19,7 @@ const actionClass =
 export function QuickActionsStrip({ actions }: Props) {
   return (
     <nav
-      className="grid w-full min-w-0 grid-cols-2 gap-1.5 sm:grid-cols-3 lg:grid-cols-3 lg:gap-2"
+      className="grid w-full min-w-0 grid-cols-1 gap-1.5 lg:gap-2"
       aria-label="Quick actions"
     >
       {actions.map((a) => (
@@ -43,7 +29,7 @@ export function QuickActionsStrip({ actions }: Props) {
           className={actionClass}
         >
           <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-md bg-white text-primary ring-1 ring-slate-200/80">
-            {iconMap[a.id] ?? <UserPlus className="h-3 w-3" aria-hidden />}
+            {iconMap[a.id] ?? <FileBarChart className="h-3 w-3" aria-hidden />}
           </span>
           <span className="min-w-0 text-center leading-snug lg:text-left">
             {a.label}

@@ -15,7 +15,13 @@ import {
 import { formatAssessmentDateYmd } from "@/lib/progress-assessment-display";
 import { ROLE_ASSISTANT_COACH, ROLE_HEAD_COACH } from "@/lib/roles";
 
-type StudentOption = { id: string; fullName: string; batchName: string | null; batchId: string | null };
+type StudentOption = {
+  id: string;
+  fullName: string;
+  batchName: string | null;
+  batchId: string | null;
+  branchLocationName?: string | null;
+};
 
 type ListResponse = { ok: true; assessments: ProgressAssessmentListItem[] } | { ok: false; error?: string };
 

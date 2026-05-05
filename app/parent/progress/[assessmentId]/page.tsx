@@ -43,14 +43,16 @@ export default async function ParentProgressReportPage({
     notFound();
   }
 
-  const report = await getParentProgressAssessmentDetail(
+  const detail = await getParentProgressAssessmentDetail(
     user.id,
     user.instituteId,
     assessmentId,
   );
-  if (!report) {
+  if (!detail) {
     notFound();
   }
+  const { report, studentFullName, branchLocationName } = detail;
+  const instituteLabel = user.instituteName?.trim() || null;
 
   return (
     <main className="min-h-dvh bg-[#fafbfc]">
@@ -65,6 +67,21 @@ export default async function ParentProgressReportPage({
         <p className="mt-1 text-sm text-slate-600">
           Details from your child&apos;s latest approved assessment.
         </p>
+        {studentFullName ? (
+          <p className="mt-3 text-sm text-slate-800">
+            <span className="font-semibold text-slate-600">Student:</span> {studentFullName}
+          </p>
+        ) : null}
+        {instituteLabel ? (
+          <p className="mt-1 text-sm text-slate-800">
+            <span className="font-semibold text-slate-600">Institute:</span> {instituteLabel}
+          </p>
+        ) : null}
+        {branchLocationName ? (
+          <p className="mt-1 text-sm text-slate-800">
+            <span className="font-semibold text-slate-600">Branch:</span> {branchLocationName}
+          </p>
+        ) : null}
         <div className="mt-6">
           <ParentLatestProgressReportSection
             report={report}

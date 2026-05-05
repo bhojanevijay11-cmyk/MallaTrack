@@ -58,7 +58,7 @@ export async function POST(req: Request) {
   if (!name) {
     return apiError({
       code: "BRANCH_CREATE_BAD_REQUEST",
-      message: "Branch name is required.",
+      message: "Branch location / center name is required.",
       status: 400,
     });
   }

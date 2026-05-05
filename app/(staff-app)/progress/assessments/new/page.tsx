@@ -13,6 +13,7 @@ function narrowStudentsForNewAssessment(
     id: string;
     fullName: string;
     batchName: string | null;
+    branchLocationName: string | null;
     batchId: string | null;
   }>,
   initialBatchId: string,
@@ -129,6 +130,7 @@ export default async function NewProgressAssessmentPage({
     id: s.id,
     fullName: s.fullName,
     batchName: s.batch?.name?.trim() || null,
+    branchLocationName: s.batch?.branch?.name?.trim() || null,
     batchId: s.batchId ?? null,
   }));
 

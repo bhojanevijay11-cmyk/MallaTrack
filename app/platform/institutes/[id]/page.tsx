@@ -235,7 +235,7 @@ export default async function PlatformInstituteDetailPage({ params }: PageProps)
               <table className="min-w-full text-left text-sm">
                 <thead className="border-b border-slate-200/80 bg-slate-50/80 text-xs font-semibold uppercase tracking-[0.08em] text-slate-500">
                   <tr>
-                    <th className="px-4 py-3">Branch</th>
+                    <th className="px-4 py-3">Location / center</th>
                     <th className="px-4 py-3 text-right">Batches (linked)</th>
                     <th className="px-4 py-3 text-right">Students (in batches)</th>
                   </tr>

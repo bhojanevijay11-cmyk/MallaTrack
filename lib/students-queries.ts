@@ -11,7 +11,13 @@ import { logTenantIntegrityGuardrail } from "@/lib/tenant-integrity-log";
 import { assertBatchHasBranchId } from "@/lib/write-scope-validation";
 
 export const studentBatchInclude = {
-  batch: { select: { id: true, name: true } },
+  batch: {
+    select: {
+      id: true,
+      name: true,
+      branch: { select: { name: true } },
+    },
+  },
 } as const;
 
 export type StudentsListScope =
@@ -83,14 +89,19 @@ const parentDashboardStudentSelect = {
   id: true,
   fullName: true,
   batchId: true,
-  batch: { select: { name: true } },
+  batch: {
+    select: {
+      name: true,
+      branch: { select: { name: true } },
+    },
+  },
 } as const;
 
 export type ParentDashboardStudent = {
   id: string;
   fullName: string;
   batchId: string | null;
-  batch: { name: string | null } | null;
+  batch: { name: string | null; branch: { name: string } | null } | null;
 };
 
 /** Linked children for a parent account (tenant-scoped). */
