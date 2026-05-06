@@ -105,6 +105,30 @@ function buildSingleCountMap(
   return map;
 }
 
+/** Legacy rows sometimes store `Institute / location` in Branch.name; platform detail should expose the location label only. */
+function platformBranchLocationLabel(
+  instituteName: string,
+  branchName: string,
+): string {
+  const label = branchName.trim();
+  const org = instituteName.trim();
+  if (!label || !org) return label;
+
+  const slashPrefix = `${org}/`;
+  if (label.startsWith(slashPrefix)) {
+    const rest = label.slice(slashPrefix.length).trim();
+    return rest || label;
+  }
+
+  const emDashPrefix = `${org} — `;
+  if (label.startsWith(emDashPrefix)) {
+    const rest = label.slice(emDashPrefix.length).trim();
+    return rest || label;
+  }
+
+  return label;
+}
+
 export async function getPlatformInstituteSummaries(): Promise<
   PlatformInstituteListItem[]
 > {
@@ -306,7 +330,7 @@ export async function getPlatformInstituteDetail(
       })),
       branches: branches.map((b) => ({
         id: b.id,
-        name: b.name,
+        name: platformBranchLocationLabel(institute.name, b.name),
         batchCount: batchesPerBranch.get(b.id) ?? 0,
         studentCount: studentsPerBranch.get(b.id) ?? 0,
       })),

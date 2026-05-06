@@ -68,7 +68,7 @@ export default async function PlatformInstituteDetailPage({ params }: PageProps)
     {
       label: "Total students",
       value: c.studentsTotal,
-      hint: "All Student rows linked to this institute (any batch linkage or status).",
+      hint: "All student rows linked to this institute (any batch linkage or status).",
     },
     {
       label: "Active students",
@@ -257,8 +257,8 @@ export default async function PlatformInstituteDetailPage({ params }: PageProps)
                 </tbody>
               </table>
               <p className="border-t border-slate-100 px-4 py-2 text-[11px] text-slate-500">
-                Batch and student columns count only rows assigned to a batch on this branch;
-                unassigned students are not included in the per-branch student total.
+                Batch and student counts include only rows linked to a batch on this branch.
+                Students without a batch are excluded from the branch student total.
               </p>
             </div>
           )}

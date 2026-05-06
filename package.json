@@ -28,7 +28,8 @@
     "backfill:legacy-batch-branches": "node scripts/backfill-legacy-batch-branches.js",
     "backfill:institute": "tsx scripts/backfill-institute.ts",
     "seed:two-institutes:dev": "tsx scripts/seed-two-institutes-dev.ts",
-    "seed:super-admin:dev": "node scripts/seed-super-admin-dev.js"
+    "seed:super-admin:dev": "node scripts/seed-super-admin-dev.js",
+    "cleanup:local-test-data": "node scripts/cleanup-local-test-data.js"
   },
   "dependencies": {
     "@prisma/client": "^6.19.0",
