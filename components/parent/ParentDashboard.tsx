@@ -68,7 +68,7 @@ function StudentPanel({ b }: { b: ParentStudentDashboardBundle }) {
           )}
           {b.branchLocationName?.trim() ? (
             <p className="mt-1 max-w-sm text-xs font-medium leading-snug text-slate-600">
-              <span className="font-semibold text-slate-500">Branch:</span>{" "}
+              <span className="font-semibold text-slate-500">Location:</span>{" "}
               {b.branchLocationName.trim()}
             </p>
           ) : null}
@@ -247,9 +247,15 @@ function StudentPanel({ b }: { b: ParentStudentDashboardBundle }) {
 type ParentDashboardProps = {
   bundles: ParentStudentDashboardBundle[];
   instituteName: string | null;
+  /** Greeting name (first segment of display name or email). */
+  parentDisplayName?: string | null;
 };
 
-export function ParentDashboard({ bundles, instituteName }: ParentDashboardProps) {
+export function ParentDashboard({
+  bundles,
+  instituteName,
+  parentDisplayName = null,
+}: ParentDashboardProps) {
   const [idx, setIdx] = useState(0);
 
   useEffect(() => {
@@ -285,15 +291,20 @@ export function ParentDashboard({ bundles, instituteName }: ParentDashboardProps
         </div>
         {instituteName?.trim() ? (
           <p className="mt-0.5 text-[10px] font-semibold uppercase tracking-[0.14em] text-slate-400">
-            {instituteName.trim()}
+            Institute · {instituteName.trim()}
           </p>
         ) : null}
       </header>
 
       <div className="mb-3 lg:mb-4">
-        <h1 className="text-xs font-bold uppercase tracking-[0.18em] text-slate-500">
-          Parent dashboard
-        </h1>
+        <h1 className="text-xs font-bold uppercase tracking-[0.18em] text-slate-500">Parent home</h1>
+        {parentDisplayName?.trim() ? (
+          <p className="mt-1 text-sm font-semibold text-slate-800">Hi {parentDisplayName.trim()}</p>
+        ) : null}
+        <p className="mt-1 max-w-md text-[13px] leading-snug text-slate-600">
+          Published progress, attendance, and schedule for your child — select a student below if you have more than
+          one.
+        </p>
       </div>
 
       {bundles.length > 1 ? (

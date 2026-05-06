@@ -13,10 +13,15 @@ export function PlatformShell({ children }: PlatformShellProps) {
         <div className="mx-auto flex max-w-5xl items-center justify-between gap-4 px-4 py-3 sm:px-6">
           <Link
             href="/platform"
-            className="flex items-center gap-2 text-slate-900"
+            className="flex min-w-0 flex-col gap-0.5 text-slate-900 sm:flex-row sm:items-baseline sm:gap-2"
           >
-            <BrandMark size="md" />
-            <span className="font-semibold tracking-tight">MallaTrack</span>
+            <span className="flex items-center gap-2">
+              <BrandMark size="md" />
+              <span className="font-semibold tracking-tight">MallaTrack</span>
+            </span>
+            <span className="text-[10px] font-semibold uppercase tracking-[0.12em] text-slate-400 sm:pl-1">
+              Platform
+            </span>
           </Link>
           <PlatformSignOutButton />
         </div>

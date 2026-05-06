@@ -40,8 +40,33 @@ export const EMPTY_ATTENDANCE_TREND: AttendanceTrendPoint[] = [];
 
 export const QUICK_ACTIONS: QuickActionDef[] = [
   {
-    id: "view-reports",
-    label: "View Reports",
-    description: "Attendance & progress",
+    id: "progress-review",
+    label: "Progress review",
+    description: "Pending assessments",
+  },
+  {
+    id: "students",
+    label: "Students",
+    description: "Roster & alerts",
+  },
+  {
+    id: "branches",
+    label: "Branches",
+    description: "Locations & settings",
+  },
+  {
+    id: "batches",
+    label: "Batches",
+    description: "Schedules & assignments",
+  },
+  {
+    id: "coaches",
+    label: "Coaches",
+    description: "Staff roster",
+  },
+  {
+    id: "attendance",
+    label: "Attendance",
+    description: "Mark & review today",
   },
 ];

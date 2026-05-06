@@ -66,11 +66,11 @@ export function ParentLatestProgressReportSection({
       <section className="rounded-2xl border border-dashed border-slate-200/90 bg-white/80 p-4 shadow-sm sm:p-5">
         {showSectionHeading ? (
           <h2 className="text-[11px] font-bold uppercase tracking-[0.14em] text-slate-500">
-            Latest Progress Report
+            Latest published progress
           </h2>
         ) : null}
         <p className={`text-sm leading-relaxed text-slate-600 ${showSectionHeading ? "mt-3" : ""}`}>
-          No progress report available yet.
+          No published progress update yet. Your coach will share one here when it is ready for families.
         </p>
       </section>
     );
@@ -108,7 +108,7 @@ export function ParentLatestProgressReportSection({
         <div className="flex flex-col gap-1 sm:flex-row sm:items-start sm:justify-between">
           {showSectionHeading ? (
             <h2 className="text-[11px] font-bold uppercase tracking-[0.14em] text-slate-500">
-              Latest Progress Report
+              Latest published progress
             </h2>
           ) : null}
           {showViewFullLink && compact ? (

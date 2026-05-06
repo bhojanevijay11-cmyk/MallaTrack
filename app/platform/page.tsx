@@ -13,11 +13,16 @@ export default async function PlatformPage() {
     <PlatformShell>
       <main className="mx-auto max-w-5xl px-4 py-8 sm:px-6 sm:py-10">
         <div className="mb-8 space-y-2">
+          <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-slate-500">
+            PLATFORM OPERATOR · ALL INSTITUTES
+          </p>
           <h1 className="text-2xl font-semibold tracking-tight text-slate-900 sm:text-3xl">
             MallaTrack Platform
           </h1>
           <p className="max-w-2xl text-base text-slate-600">
-            Platform-level supervision for institutes, access, and system health.
+            Monitor every institute from one place.
+            <br />
+            Review institute setup, system health, support issues, and audit activity.
           </p>
         </div>
         <ul className="grid gap-4 sm:grid-cols-2">

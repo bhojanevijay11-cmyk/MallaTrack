@@ -92,10 +92,18 @@ export default async function ParentPage() {
   }
 
   const instituteName = user.instituteName;
+  const parentDisplayName =
+    session.user.name?.split("@")[0]?.trim() ||
+    session.user.email?.split("@")[0]?.trim() ||
+    null;
 
   return (
     <main className="min-h-dvh bg-[#fafbfc]">
-      <ParentDashboard bundles={bundles} instituteName={instituteName} />
+      <ParentDashboard
+        bundles={bundles}
+        instituteName={instituteName}
+        parentDisplayName={parentDisplayName}
+      />
     </main>
   );
 }

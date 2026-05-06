@@ -21,6 +21,10 @@ export default async function AdminPage() {
   const session = await getServerSession(authOptions);
   const instituteId = session?.user?.instituteId ?? null;
   const instituteLabel = session?.user?.instituteName?.trim() || null;
+  const displayName =
+    session?.user?.name?.split("@")[0]?.trim() ||
+    session?.user?.email?.split("@")[0]?.trim() ||
+    null;
 
   const now = new Date();
   const dateLabel = new Intl.DateTimeFormat("en-IN", {
@@ -145,6 +149,7 @@ export default async function AdminPage() {
         dateLabel={dateLabel}
         kpis={kpis}
         instituteLabel={instituteLabel}
+        displayName={displayName}
         coachProgressAlerts={coachProgressAlerts}
         progressV2Snapshot={progressV2Snapshot}
         attendanceTrendSeries={attendanceTrendSeries}

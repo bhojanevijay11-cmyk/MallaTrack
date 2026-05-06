@@ -22,16 +22,19 @@ export function HeadCoachDashboard({
 
   const branchLabel = snap?.branchName?.trim() || null;
   const summary = snap?.summary;
+  const assistantScopePhrase = branchLabel ? "in this location" : "across your batches";
 
   const supportLine = (
     <>
       Welcome back, {displayName}.
-      {branchLabel ? (
+      {!branchLabel ? (
         <>
           {" "}
-          <span className="font-semibold text-slate-800">{branchLabel}</span>
-          {" · "}
+          <span className="font-semibold text-slate-800">All locations</span> in your institute
+          {summary ? " · " : "."}
         </>
+      ) : summary ? (
+        " "
       ) : null}
       {summary ? (
         <>
@@ -46,7 +49,7 @@ export function HeadCoachDashboard({
                 {summary.assistantCoachCount}
               </span>{" "}
               assistant coach
-              {summary.assistantCoachCount === 1 ? "" : "es"} in this branch
+              {summary.assistantCoachCount === 1 ? "" : "es"} {assistantScopePhrase}
             </>
           ) : null}
           .
@@ -66,15 +69,32 @@ export function HeadCoachDashboard({
         <div className="flex flex-col gap-2 sm:flex-row sm:flex-wrap sm:items-start sm:justify-between sm:gap-3">
           <div className="min-w-0 flex-1">
             <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-amber-900/90">
-              Command Center
+              Head coach
             </p>
             {instituteName?.trim() ? (
-              <p className="mt-0.5 text-xs font-medium text-slate-500">{instituteName.trim()}</p>
+              <p className="mt-0.5 text-xs font-medium text-slate-600">
+                Institute · <span className="text-slate-800">{instituteName.trim()}</span>
+                {branchLabel ? (
+                  <>
+                    {" "}
+                    · Location · <span className="text-slate-800">{branchLabel}</span>
+                  </>
+                ) : null}
+              </p>
+            ) : branchLabel ? (
+              <p className="mt-0.5 text-xs font-medium text-slate-600">
+                Location · <span className="text-slate-800">{branchLabel}</span>
+              </p>
             ) : null}
             <h1 className="mt-0.5 text-lg font-semibold tracking-tight text-slate-900 sm:text-xl md:text-2xl">
-              Head Coach Overview
+              Overview
             </h1>
-            <p className="mt-0.5 max-w-2xl text-sm leading-snug text-slate-600">{supportLine}</p>
+            <p className="mt-0.5 max-w-2xl text-[13px] leading-snug text-slate-600 sm:text-sm">
+              Review submitted progress assessments, approve or send back updates, and keep attendance and batches on
+              track
+              {branchLabel ? " for this location" : ""}.
+            </p>
+            <p className="mt-1 max-w-2xl text-sm leading-snug text-slate-600">{supportLine}</p>
           </div>
           <div
             className="flex w-full shrink-0 flex-col gap-1.5 sm:w-auto sm:min-w-[220px]"
@@ -236,7 +256,7 @@ export function HeadCoachDashboard({
         {snap ? (
           <div className="mt-3 sm:mt-4">
             <p className="mb-2 text-[11px] font-semibold uppercase tracking-[0.14em] text-slate-500">
-              Review queue &amp; student alerts
+              Assessments to review &amp; student alerts
             </p>
             <ProgressAttentionPanels
               compact

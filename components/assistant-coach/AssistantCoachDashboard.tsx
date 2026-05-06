@@ -207,11 +207,11 @@ export function AssistantCoachDashboard({
     batches === null ? null : totalStudentsAcrossAssigned;
 
   const branchSummary = useMemo(() => {
-    if (!assignedBatches.length) return { title: "—", subtitle: "Branch for your batches" };
+    if (!assignedBatches.length) return { title: "—", subtitle: "Location for your batches" };
     const names = uniqueBranchNames(assignedBatches);
-    if (names.length === 0) return { title: "—", subtitle: "Branch not set on batches" };
-    if (names.length === 1) return { title: names[0]!, subtitle: "Your branch" };
-    return { title: `${names.length} branches`, subtitle: names.join(" · ") };
+    if (names.length === 0) return { title: "—", subtitle: "Location not set on batches" };
+    if (names.length === 1) return { title: names[0]!, subtitle: "Your training location" };
+    return { title: `${names.length} locations`, subtitle: names.join(" · ") };
   }, [assignedBatches]);
 
   const heroBatch = activeBatches[0];
@@ -224,15 +224,19 @@ export function AssistantCoachDashboard({
     <div className="pb-24 md:pb-6">
       <main className="mx-auto max-w-lg px-4 py-3 sm:max-w-4xl lg:max-w-6xl lg:py-4">
         <p className="text-center text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-400">
-          Hi {displayName}
+          Assistant coach
         </p>
+        <p className="mt-0.5 text-center text-sm font-semibold text-slate-900">Hi {displayName}</p>
         {session?.user?.instituteName?.trim() ? (
           <p className="mt-1 text-center text-xs font-medium text-slate-600">
-            {session.user.instituteName.trim()}
+            Institute · {session.user.instituteName.trim()}
           </p>
         ) : session?.user?.instituteId === null ? (
           <p className="mt-1 text-center text-xs text-amber-800">No institute linked</p>
         ) : null}
+        <p className="mx-auto mt-2 max-w-md text-center text-[13px] leading-snug text-slate-600">
+          Draft and submit progress assessments for your head coach to review. Mark attendance for your assigned batches.
+        </p>
 
         <div className="mt-3 grid gap-3 lg:grid-cols-3 lg:items-start">
           <div className="space-y-3 lg:col-span-2">
@@ -287,7 +291,7 @@ export function AssistantCoachDashboard({
                       className="flex w-full items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white py-2.5 text-sm font-medium text-slate-800 shadow-sm transition hover:bg-slate-50"
                     >
                       <PenLine className="h-4 w-4" strokeWidth={2.25} aria-hidden />
-                      View progress
+                      Progress assessments
                     </Link>
                   </div>
                 </>
@@ -334,7 +338,7 @@ export function AssistantCoachDashboard({
                       className="flex w-full items-center justify-center gap-2 rounded-xl border border-amber-900/35 bg-white py-2.5 text-sm font-medium text-amber-900 shadow-sm transition hover:bg-amber-50"
                     >
                       <PenLine className="h-4 w-4" strokeWidth={2.25} aria-hidden />
-                      View progress
+                      Progress assessments
                     </Link>
                   </div>
                 </>
@@ -377,7 +381,7 @@ export function AssistantCoachDashboard({
                               className="flex w-full items-center justify-center gap-2 rounded-xl border border-amber-900/30 bg-white py-2 text-[11px] font-medium text-amber-900 transition hover:bg-amber-50"
                             >
                               <PenLine className="h-3.5 w-3.5" strokeWidth={2.25} aria-hidden />
-                              View progress
+                              Progress assessments
                             </Link>
                           </div>
                         </li>
@@ -471,7 +475,7 @@ export function AssistantCoachDashboard({
               </div>
               <div className="rounded-xl border border-slate-200/90 bg-white p-3 shadow-sm">
                 <p className="text-[10px] font-semibold uppercase tracking-wide text-slate-400">
-                  Facility
+                  Location
                 </p>
                 <p className="mt-1 flex items-center gap-2 text-lg font-bold text-slate-900">
                   <span className="h-2 w-2 rounded-full bg-emerald-500" aria-hidden />

@@ -18,10 +18,10 @@ export function CoachAttentionSummary({ counts }: { counts: ProgressAlertCounts 
   return (
     <section className={shell}>
       <h2 className="text-[11px] font-semibold uppercase tracking-[0.14em] text-slate-500">
-        Progress actions
+        Your assessments
       </h2>
       <p className="mt-1 text-[13px] text-slate-500">
-        Jump to drafts and revisions — counts match your filtered list on Progress.
+        Finish drafts and resubmit anything that was sent back — counts match your list on Progress.
       </p>
       <ul className="mt-4 divide-y divide-slate-100 rounded-xl border border-slate-100">
         <li>
@@ -30,8 +30,8 @@ export function CoachAttentionSummary({ counts }: { counts: ProgressAlertCounts 
             className="flex items-center justify-between gap-3 px-3 py-2.5 text-sm transition hover:bg-slate-50/90"
           >
             <div className="min-w-0">
-              <p className="font-medium text-slate-900">Draft progress</p>
-              <p className="text-[11px] text-slate-500">Assessments not yet submitted</p>
+              <p className="font-medium text-slate-900">Drafts to submit</p>
+              <p className="text-[11px] text-slate-500">Still in progress — submit when ready</p>
             </div>
             <span className="flex shrink-0 items-center gap-1 tabular-nums">
               <span className="font-semibold text-slate-900">{draft.toLocaleString("en-IN")}</span>
@@ -45,8 +45,8 @@ export function CoachAttentionSummary({ counts }: { counts: ProgressAlertCounts 
             className="flex items-center justify-between gap-3 px-3 py-2.5 text-sm transition hover:bg-slate-50/90"
           >
             <div className="min-w-0">
-              <p className="font-medium text-slate-900">Needs revision</p>
-              <p className="text-[11px] text-slate-500">Returned for revision — update and resubmit</p>
+              <p className="font-medium text-slate-900">Sent back for updates</p>
+              <p className="text-[11px] text-slate-500">Revise and resubmit for your head coach</p>
             </div>
             <span className="flex shrink-0 items-center gap-1 tabular-nums">
               <span className="font-semibold text-slate-900">{n.toLocaleString("en-IN")}</span>

@@ -1,4 +1,3 @@
-import Link from "next/link";
 import { AttendanceTrendCard } from "./AttendanceTrendCard";
 import { DashboardHeader } from "./DashboardHeader";
 import { KpiRow } from "./KpiRow";
@@ -12,6 +11,7 @@ type Props = {
   dateLabel: string;
   kpis: DashboardKpis;
   instituteLabel?: string | null;
+  displayName?: string | null;
   coachProgressAlerts?: ProgressAlertCounts | null;
   /** When loaded, review-queue numbers match assessment rows on `/progress/review`. */
   progressV2Snapshot?: ProgressV2ReportingSnapshot | null;
@@ -24,6 +24,7 @@ export function AdminDashboard({
   dateLabel,
   kpis,
   instituteLabel,
+  displayName = null,
   coachProgressAlerts = null,
   progressV2Snapshot = null,
   attendanceTrendSeries,
@@ -38,6 +39,7 @@ export function AdminDashboard({
             dateLabel={dateLabel}
             quickActions={QUICK_ACTIONS}
             instituteLabel={instituteLabel}
+            displayName={displayName}
           />
 
           <div className="grid gap-3 lg:grid-cols-12 lg:items-start lg:gap-3">
@@ -55,21 +57,6 @@ export function AdminDashboard({
                   Progress summaries could not be loaded. Refresh the page or try again shortly.
                 </p>
               ) : null}
-              <nav
-                className="rounded-xl border border-slate-200/90 bg-white p-3 shadow-sm"
-                aria-label="Management"
-              >
-                <h2 className="text-[11px] font-semibold uppercase tracking-[0.12em] text-slate-400">
-                  Management
-                </h2>
-                <ul className="mt-3 flex flex-wrap gap-x-4 gap-y-2 text-sm font-semibold text-amber-900">
-                  <li>
-                    <Link className="underline-offset-2 hover:underline" href="/branches">
-                      Branches
-                    </Link>
-                  </li>
-                </ul>
-              </nav>
               {coachProgressAlerts ? (
                 <ProgressAttentionPanels
                   counts={coachProgressAlerts}
