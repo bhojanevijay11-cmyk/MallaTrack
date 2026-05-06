@@ -1,4 +1,5 @@
 import type { Prisma } from "@prisma/client";
+import { branchLocationDisplayLabel } from "@/lib/branch-display-label";
 import { prisma } from "@/lib/prisma";
 import {
   ROLE_ADMIN,
@@ -81,6 +82,25 @@ function inviteStatus(now: Date, usedAt: Date | null, expiresAt: Date): Platform
   return "expired";
 }
 
+function uniqueAssistantBranchLabels(
+  assignments: Array<{
+    batch: {
+      branch: { name: string } | null;
+      institute: { name: string } | null;
+    } | null;
+  }>,
+): string[] {
+  const set = new Set<string>();
+  for (const a of assignments) {
+    const raw = a.batch?.branch?.name;
+    if (!raw?.trim()) continue;
+    const inst = a.batch?.institute?.name ?? null;
+    const label = branchLocationDisplayLabel(inst, raw);
+    if (label) set.add(label);
+  }
+  return [...set].sort((x, y) => x.localeCompare(y));
+}
+
 function scopeSummaryForUser(args: {
   role: string;
   instituteId: string | null;
@@ -88,6 +108,7 @@ function scopeSummaryForUser(args: {
   branchName: string | null;
   branchMissing: boolean;
   assistantBatchCount: number;
+  assistantBranchLabels: string[];
   parentLinkedStudentCount: number;
 }): string {
   const {
@@ -97,6 +118,7 @@ function scopeSummaryForUser(args: {
     branchName,
     branchMissing,
     assistantBatchCount,
+    assistantBranchLabels,
     parentLinkedStudentCount,
   } = args;
 
@@ -111,9 +133,12 @@ function scopeSummaryForUser(args: {
       return branchName?.trim()
         ? `Head coach scoped to branch: ${branchName.trim()}`
         : "Head coach scoped to branch: (unnamed)";
-    case ROLE_ASSISTANT_COACH:
+    case ROLE_ASSISTANT_COACH: {
       if (!instituteId) return "Missing expected institute scope";
-      return `Assistant coach assigned to ${assistantBatchCount} batch(es)`;
+      const base = `Assistant coach assigned to ${assistantBatchCount} batch(es)`;
+      if (assistantBranchLabels.length === 0) return base;
+      return `${base}; branches: ${assistantBranchLabels.join(", ")}`;
+    }
     case ROLE_PARENT:
       return `Parent linked to ${parentLinkedStudentCount} student(s)`;
     default:
@@ -162,6 +187,16 @@ export async function getPlatformSupportUsers(
       createdAt: true,
       institute: { select: { name: true } },
       branch: { select: { name: true } },
+      assistantAssignments: {
+        select: {
+          batch: {
+            select: {
+              branch: { select: { name: true } },
+              institute: { select: { name: true } },
+            },
+          },
+        },
+      },
       _count: {
         select: {
           assistantAssignments: true,
@@ -173,8 +208,16 @@ export async function getPlatformSupportUsers(
 
   const users: PlatformSupportUserRow[] = rows.map((u) => {
     const branchMissing = Boolean(u.branchId && !u.branch);
-    const branchName = u.branch?.name ?? null;
+    const instituteName = u.institute?.name ?? null;
+    const branchName = branchLocationDisplayLabel(
+      instituteName,
+      u.branch?.name ?? null,
+    );
     const assistantBatchCount = u._count.assistantAssignments;
+    const assistantBranchLabels =
+      u.role === ROLE_ASSISTANT_COACH
+        ? uniqueAssistantBranchLabels(u.assistantAssignments)
+        : [];
     const parentLinkedStudentCount = u._count.students;
 
     return {
@@ -182,7 +225,7 @@ export async function getPlatformSupportUsers(
       email: u.email,
       role: u.role,
       instituteId: u.instituteId,
-      instituteName: u.institute?.name ?? null,
+      instituteName,
       branchId: u.branchId,
       branchName,
       assistantBatchCount,
@@ -195,6 +238,7 @@ export async function getPlatformSupportUsers(
         branchName,
         branchMissing,
         assistantBatchCount,
+        assistantBranchLabels,
         parentLinkedStudentCount,
       }),
     };
