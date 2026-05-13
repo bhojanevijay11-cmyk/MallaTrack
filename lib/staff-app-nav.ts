@@ -10,6 +10,7 @@ export type StaffNavItemId =
   | "dashboard"
   | "students"
   | "batches"
+  | "branches"
   | "attendance"
   | "progress";
 
@@ -43,6 +44,7 @@ export function getStaffNavItems(role: string | undefined | null): StaffNavItem[
     { id: "dashboard", href: dashboardHref, label: "Dashboard" },
     { id: "students", href: "/students", label: "Students" },
     { id: "batches", href: "/batches", label: "Batches" },
+    { id: "branches", href: "/branches", label: "Branches" },
     { id: "attendance", href: "/attendance", label: "Attendance" },
     { id: "progress", href: progressHref, label: "Progress" },
   ];
@@ -65,6 +67,8 @@ export function isStaffNavItemActive(
       return pathname === "/students" || pathname.startsWith("/students/");
     case "batches":
       return pathname === "/batches" || pathname.startsWith("/batches/");
+    case "branches":
+      return pathname === "/branches" || pathname.startsWith("/branches/");
     case "attendance":
       return pathname === "/attendance" || pathname.startsWith("/attendance/");
     case "progress":

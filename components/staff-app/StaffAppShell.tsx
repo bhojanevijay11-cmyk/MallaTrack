@@ -5,6 +5,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
   Bell,
+  Building2,
   ClipboardCheck,
   Layers,
   LayoutDashboard,
@@ -30,6 +31,7 @@ const ICONS: Record<StaffNavItemId, typeof LayoutDashboard> = {
   dashboard: LayoutDashboard,
   students: Users,
   batches: Layers,
+  branches: Building2,
   attendance: ClipboardCheck,
   progress: TrendingUp,
 };

@@ -2,7 +2,6 @@ import { AttendanceTrendCard } from "./AttendanceTrendCard";
 import { DashboardHeader } from "./DashboardHeader";
 import { KpiRow } from "./KpiRow";
 import type { AttendanceTrendPoint, DashboardKpis } from "./mockData";
-import { QUICK_ACTIONS } from "./mockData";
 import type { ProgressAlertCounts } from "@/lib/progress-alerts";
 import type { ProgressV2ReportingSnapshot } from "@/lib/progress-v2-reporting-queries";
 import { ProgressAttentionPanels } from "@/components/operations/ProgressAttentionPanels";
@@ -37,7 +36,6 @@ export function AdminDashboard({
         <div className="space-y-3">
           <DashboardHeader
             dateLabel={dateLabel}
-            quickActions={QUICK_ACTIONS}
             instituteLabel={instituteLabel}
             displayName={displayName}
           />
