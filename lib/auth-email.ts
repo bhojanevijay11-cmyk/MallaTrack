@@ -10,6 +10,14 @@ function escapeHtmlAttr(value: string): string {
     .replace(/</g, "&lt;");
 }
 
+async function throwIfResendNotOk(res: Response): Promise<void> {
+  if (res.ok) return;
+  const responseBody = await res.text().catch(() => "");
+  throw new Error(
+    `Resend request failed (${res.status}): ${responseBody.slice(0, 500)}`,
+  );
+}
+
 export function isPasswordResetEmailConfigured(): boolean {
   return Boolean(
     process.env.RESEND_API_KEY?.trim() && process.env.AUTH_EMAIL_FROM?.trim(),
@@ -37,10 +45,7 @@ export async function sendParentInviteEmail(to: string, inviteUrl: string): Prom
     }),
   });
 
-  if (!res.ok) {
-    await res.text().catch(() => "");
-    throw new Error(`Resend request failed (${res.status}).`);
-  }
+  await throwIfResendNotOk(res);
 }
 
 export async function sendPasswordResetEmail(
@@ -67,8 +72,5 @@ export async function sendPasswordResetEmail(
     }),
   });
 
-  if (!res.ok) {
-    await res.text().catch(() => "");
-    throw new Error(`Resend request failed (${res.status}).`);
-  }
+  await throwIfResendNotOk(res);
 }

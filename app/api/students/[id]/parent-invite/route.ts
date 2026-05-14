@@ -205,6 +205,12 @@ export async function POST(
       logError("students.parent_invite.email_send_failed", logCtx, err, {
         studentId: student.id,
       });
+      return apiError({
+        code: "STUDENT_PARENT_INVITE_EMAIL_FAILED",
+        message:
+          "Parent invite was created, but the email could not be sent. Please check the email address or try again.",
+        status: 502,
+      });
     }
   } else if (process.env.NODE_ENV !== "production") {
     logWarn("students.parent_invite.dev_email_not_configured", logCtx, {
@@ -214,6 +220,12 @@ export async function POST(
   } else {
     logWarn("students.parent_invite.email_not_configured", logCtx, {
       studentId: student.id,
+    });
+    return apiError({
+      code: "STUDENT_PARENT_INVITE_EMAIL_NOT_CONFIGURED",
+      message:
+        "Parent invite was created, but outbound email is not configured. Configure Resend before inviting parents in production.",
+      status: 503,
     });
   }
 
